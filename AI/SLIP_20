@@ -1,0 +1,61 @@
+# Program: Simple College Information Bot
+# Subject: Artificial Intelligence (CS-505-MJP)
+# --------------------------------------------
+
+print("🤖 Hi! I am your College Information Bot.")
+print("You can ask me about my name, department, subjects, or teachers.")
+print("Type 'exit' to quit.\n")
+
+def college_bot():
+    while True:
+        user_input = input("You: ").lower()
+
+        if user_input == "exit":
+            print("Bot: Goodbye! Have a great day! 👋")
+            break
+
+        elif "name" in user_input:
+            print("Bot: My name is Jay, an M.Sc. Computer Science student at SPPU.")
+
+        elif "college" in user_input:
+            print("Bot: I study at Savitribai Phule Pune University.")
+
+        elif "department" in user_input:
+            print("Bot: I belong to the Department of Computer Science.")
+
+        elif "subjects" in user_input:
+            print("Bot: My subjects include Advanced OS, AI, Data Science, and DBMS.")
+
+        elif "teacher" in user_input:
+            print("Bot: Our professors are highly experienced in AI, OS, and Cloud Computing.")
+
+        elif "course" in user_input:
+            print("Bot: I am pursuing M.Sc. (Computer Science), Semester 1.")
+
+        else:
+            print("Bot: Sorry, I don’t have that information right now.")
+
+college_bot()
+
+
+# Program: Mini-Max Algorithm Implementation
+# Subject: Artificial Intelligence (CS-505-MJP)
+# --------------------------------------------
+
+def minimax(depth, nodeIndex, isMax, scores, h):
+    # Base condition: when we reach leaf node
+    if depth == h:
+        return scores[nodeIndex]
+    
+    if isMax:
+        return max(minimax(depth + 1, nodeIndex * 2, False, scores, h),
+                   minimax(depth + 1, nodeIndex * 2 + 1, False, scores, h))
+    else:
+        return min(minimax(depth + 1, nodeIndex * 2, True, scores, h),
+                   minimax(depth + 1, nodeIndex * 2 + 1, True, scores, h))
+
+# Example game tree leaf scores
+scores = [3, 5, 2, 9, 12, 5, 23, 23]
+height = 3  # log2(len(scores))
+
+print("Optimal value (Best Outcome):", minimax(0, 0, True, scores, height))

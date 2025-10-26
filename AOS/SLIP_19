@@ -1,0 +1,80 @@
+// Q1: Print file type and inode number for given files
+#include <stdio.h>
+#include <sys/stat.h>
+
+void print_type(mode_t mode) {
+    if (S_ISREG(mode)) printf("Regular File");
+    else if (S_ISDIR(mode)) printf("Directory");
+    else if (S_ISCHR(mode)) printf("Character Device");
+    else if (S_ISBLK(mode)) printf("Block Device");
+    else if (S_ISFIFO(mode)) printf("FIFO (Pipe)");
+    else if (S_ISLNK(mode)) printf("Symbolic Link");
+    else if (S_ISSOCK(mode)) printf("Socket");
+    else printf("Unknown");
+}
+
+int main(int argc, char *argv[]) {
+    struct stat st;
+    if (argc < 2) {
+        printf("Usage: %s <file1> <file2> ...\n", argv[0]);
+        return 1;
+    }
+
+    for (int i = 1; i < argc; i++) {
+        if (stat(argv[i], &st) == 0) {
+            printf("\nFile: %s\n", argv[i]);
+            printf("Type: ");
+            print_type(st.st_mode);
+            printf("\nInode Number: %ld\n", st.st_ino);
+        } else {
+            perror(argv[i]);
+        }
+    }
+
+    return 0;
+}
+
+
+// Q2: Implement ls -l | wc -l using fork, pipe, exec
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+int main() {
+    int fd[2];
+    pid_t pid;
+
+    if (pipe(fd) == -1) {
+        perror("Pipe failed");
+        return 1;
+    }
+
+    pid = fork();
+
+    if (pid < 0) {
+        perror("Fork failed");
+        return 1;
+    }
+
+    if (pid == 0) {
+        // Child -> executes "ls -l"
+        close(fd[0]);          // close read end
+        dup2(fd[1], STDOUT_FILENO); // redirect stdout to pipe
+        close(fd[1]);
+
+        execlp("ls", "ls", "-l", NULL);
+        perror("execlp failed");
+        exit(1);
+    } else {
+        // Parent -> executes "wc -l"
+        close(fd[1]);          // close write end
+        dup2(fd[0], STDIN_FILENO);  // redirect stdin from pipe
+        close(fd[0]);
+
+        execlp("wc", "wc", "-l", NULL);
+        perror("execlp failed");
+        exit(1);
+    }
+
+    return 0;
+}
