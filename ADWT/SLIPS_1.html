@@ -1,0 +1,144 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Management Form</title>
+ <style>
+ body {
+    font-family: Arial, sans-serif;
+  }
+  h2 {
+    text-align: center;
+    color: red;
+    font-weight: 900;
+    text-decoration: underline;
+    margin-top: 20px;
+  }
+  form {
+    background: #7ffbff;
+    width: 350px;
+    margin: 20px auto;
+    padding: 15px;
+    border-radius: 10px;
+  }
+  label {
+    display: block;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  input, select, textarea {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  .priority input {
+    width: auto;
+    margin-right: 5px;
+  }
+  .button {
+    margin-top: 15px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    display: flex;
+    justify-content: center;
+  }
+  #submit {
+    background-color: green;
+   margin-right: 10px;
+ font-size: 20px;
+    color: white;
+   }
+   #clear {
+     background-color: blue;
+     font-size: 20px;
+     color: white;
+   }
+   </style>
+  </head>
+ <body>
+ <h2>Project Management</h2>
+ <form>
+  <label>Project Name</label>
+   <input type="text" placeholder="Project name" required>
+ 
+   <label>Assigned To</label>
+  <select>
+     <option>Amresh</option>
+     <option>Gaurav</option>
+     <option>Mitesh</option>
+     <option>Shubham</option>
+   </select>
+ 
+   <label>Start Date</label>
+  <input type="date" required>
+    <label>End Date</label>
+   <input type="date" required>
+ 
+   <label>Priority</label>
+   <div class="priority">
+     <input type="radio" name="priority" value="high"> High
+     <input type="radio" name="priority" value="average"> Average
+     <input type="radio" name="priority" value="low"> Low
+   </div>
+ 
+   <label>Description</label>
+   <textarea rows="3" placeholder="Brief description..."></textarea>
+ 
+   <div class="button">
+  <button id="submit">Submit</button>
+ <button id="clear">Clear</button>
+ </div>
+</form>
+</body>
+  </html>
+
+
+# Q2. Mongodb 
+// Owners Collection
+db.owners.insertMany([
+  { _id: 1, name: "Mr.Patil", contact: "9876543210" },
+  { _id: 2, name: "Mr.Shah", contact: "8765432109" },
+  { _id: 3, name: "Mrs.Deshmukh", contact: "7654321098" },
+  { _id: 4, name: "Mr.Verma", contact: "6543210987" },
+  { _id: 5, name: "Ms.Joshi", contact: "5432109876" }
+]);
+
+// Properties Collection
+db.properties.insertMany([
+  { area: "Pune", rate: 120000, location: "Kothrud", owner_id: 1 },
+  { area: "Mumbai", rate: 250000, location: "Andheri", owner_id: 2 },
+  { area: "Nashik", rate: 95000, location: "Gangapur Road", owner_id: 1 },
+  { area: "Nagpur", rate: 80000, location: "Sitabuldi", owner_id: 3 },
+  { area: "Pune", rate: 150000, location: "Baner", owner_id: 4 }
+]);
+
+
+# Q3. Queries
+//Display area wise property details.
+    db.properties.aggregate([
+    { $group: { _id: "$area", properties: { $push: "$$ROOT" } } }
+    ]);
+//Display property owned by 'Mr.Patil' having minimum rate.
+    db.properties.find({ owner_id: 1 }).sort({ rate: 1 }).limit(1);
+//Give the details of owner whose property is at “Nashik”.
+    db.properties.aggregate([
+    { $match: { area: "Nashik" } },
+    { $lookup: {
+        from: "owners",
+        localField: "owner_id",
+        foreignField: "_id",
+        as: "ownerDetails"
+        }
+    }
+    ]);
+//Display area of property whose rate is less than 100000.
+    db.properties.find(
+        { rate: { $lt: 100000 } },
+        { area: 1, _id: 0 }
+    );
+

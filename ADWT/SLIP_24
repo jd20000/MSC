@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calendar Input Types Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background-color: #f9f9f9;
+    }
+    h2 {
+      font-size: 28px;
+      color: #333;
+      text-decoration: underline;
+    }
+    form {
+      display: inline-block;
+      background: white;
+      padding: 20px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 0 8px #aaa;
+      text-align: left;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input, button {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Input Types Examples</h2>
+  <form>
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date">
+
+    <label for="datetime">Datetime:</label>
+    <input type="datetime" id="datetime" name="datetime">
+
+    <label for="datetime-local">Datetime-local:</label>
+    <input type="datetime-local" id="datetime-local" name="datetime-local">
+
+    <label for="month">Month:</label>
+    <input type="month" id="month" name="month">
+
+    <label for="time">Time:</label>
+    <input type="time" id="time" name="time">
+
+    <label for="week">Week:</label>
+    <input type="week" id="week" name="week">
+
+    <button type="submit">Submit</button>
+  </form>
+
+</body>
+</html>
+
+
+// MongoDB Start From here
+
+Model the following Library information system as a graph model,and answer 
+the following queries using Cypher.
+Consider a library information system having different types of books like text,
+reference, bibliography etc. A student can buy one or more types of book. A
+student can recommend or rate a book according to its type.
+
+1. Identify the labels and relationships, along with their properties, and draw a high-level Graph model. 
+
+2. Create nodes and relationships, along with their properties, and
+visualize your actual Graph model. 
+
+CREATE
+(b1:Book {title:'Mathematics 101', type:'Text', author:'R. Kumar'}),
+(b2:Book {title:'Physics Handbook', type:'Reference', author:'S. Sharma'}),
+(b3:Book {title:'History Guide', type:'Bibliography', author:'A. Singh'}),
+(b4:Book {title:'Chemistry Basics', type:'Text', author:'M. Verma'}),
+(b5:Book {title:'Biology Reference', type:'Reference', author:'P. Desai'}),
+
+(s1:Student {name:'Amresh'}),
+(s2:Student {name:'Mitesh'}),
+(s3:Student {name:'Shubham'}),
+
+(s1)-[:BOUGHT]->(b1),
+(s1)-[:BOUGHT]->(b2),
+(s2)-[:BOUGHT]->(b3),
+(s2)-[:BOUGHT]->(b4),
+(s3)-[:BOUGHT]->(b1),
+(s3)-[:BOUGHT]->(b5),
+
+(s1)-[:RECOMMENDED]->(b1),
+(s2)-[:RECOMMENDED]->(b4),
+(s3)-[:RECOMMENDED]->(b5),
+
+(s1)-[:RATED {rating:5}]->(b1),
+(s2)-[:RATED {rating:4}]->(b4),
+(s3)-[:RATED {rating:5}]->(b5);
+
+3. Answer the following Queries :
+
+a. List the books of type “text”
+MATCH (b:Book {type:'Text'})
+RETURN b.title, b.author;
+
+b. List the name of student who bought a text and reference types books.
+MATCH (s:Student)-[:BOUGHT]->(b:Book)
+WITH s, collect(DISTINCT b.type) AS types
+WHERE 'Text' IN types AND 'Reference' IN types
+RETURN s.name, types;
+
+c. List the most recommended book type.
+MATCH (s:Student)-[:RECOMMENDED]->(b:Book)
+RETURN b.type, count(s) AS Recommendations
+ORDER BY Recommendations DESC
+LIMIT 1;
+
+d. List the student who buy more than one type of book
+MATCH (s:Student)-[:BOUGHT]->(b:Book)
+WITH s, count(DISTINCT b.type) AS TypeCount
+WHERE TypeCount > 1
+RETURN s.name, TypeCount;

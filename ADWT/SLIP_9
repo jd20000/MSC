@@ -1,0 +1,136 @@
+#Q.1
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 30px;
+    }
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 400px;
+      margin: auto;
+      box-shadow: 0px 0px 10px gray;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      margin-top: 15px;
+      width: 100%;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <form>
+    <h2>College Admission Form</h2>
+    <label for="name">Full Name</label>
+    <input type="text" id="name" required>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" required>
+
+    <label for="dob">Date of Birth</label>
+    <input type="date" id="dob" required>
+
+    <label for="search">Search Course</label>
+    <input type="search" id="search" placeholder="Search course...">
+
+    <label for="phone">Phone Number</label>
+    <input type="tel" id="phone" required>
+
+    <label for="gender">Gender</label>
+    <select id="gender">
+      <option>Male</option>
+      <option>Female</option>
+      <option>Other</option>
+    </select>
+
+    <label for="address">Address</label>
+    <input type="text" id="address" required>
+
+    <button type="submit">Register</button>
+  </form>
+</body>
+</html>
+
+#Q.2
+// Customers
+db.customers.insertMany([
+  { _id: 1, name: "Mr. Patil", city: "Pimpri", address: "Pimpri Colony" },
+  { _id: 2, name: "Deepak Sharma", city: "Pune", address: "Kothrud" },
+  { _id: 3, name: "Dinesh Kumar", city: "Mumbai", address: "Andheri" },
+  { _id: 4, name: "Ravi Joshi", city: "Nashik", address: "Gangapur Rd" },
+  { _id: 5, name: "Divya Patil", city: "Pimpri", address: "Nigdi" },
+  { _id: 6, name: "Amit Deshmukh", city: "Pune", address: "FC Rd" },
+  { _id: 7, name: "Darshan More", city: "Pimpri", address: "Bhosari" },
+  { _id: 8, name: "Sneha Kulkarni", city: "Nashik", address: "College Rd" },
+  { _id: 9, name: "Dilip Pawar", city: "Mumbai", address: "Dadar" },
+  { _id: 10, name: "Suresh Jadhav", city: "Pune", address: "Shivajinagar" }
+]);
+
+// Loans
+db.loans.insertMany([
+  { loan_id: 101, cust_id: 1, loan_type: "Home", loan_amt: 150000 },
+  { loan_id: 102, cust_id: 2, loan_type: "Car", loan_amt: 500000 },
+  { loan_id: 103, cust_id: 3, loan_type: "Personal", loan_amt: 200000 },
+  { loan_id: 104, cust_id: 4, loan_type: "Education", loan_amt: 120000 },
+  { loan_id: 105, cust_id: 5, loan_type: "Gold", loan_amt: 90000 },
+  { loan_id: 106, cust_id: 6, loan_type: "Home", loan_amt: 300000 },
+  { loan_id: 107, cust_id: 7, loan_type: "Car", loan_amt: 450000 },
+  { loan_id: 108, cust_id: 8, loan_type: "Personal", loan_amt: 250000 },
+  { loan_id: 109, cust_id: 9, loan_type: "Education", loan_amt: 60000 },
+  { loan_id: 110, cust_id: 10, loan_type: "Home", loan_amt: 80000 }
+]);
+
+// Queries
+//List all customers whose name starts with 'D'
+    db.customers.find({ name: /^D/ }, { name: 1, _id: 0 });
+//List names of customers in descending order who have taken loan from Pimpri city
+    db.customers.find({ city: "Pimpri" }).sort({ name: -1 });
+//Display customer details having maximum loan amount
+    db.loans.aggregate([
+    { $sort: { loan_amt: -1 } },
+    { $limit: 1 },
+    { $lookup: { from: "customers", localField: "cust_id", foreignField: "_id", as: "customerDetails" } }
+    ]);
+//Update address of “Mr. Patil” where loan_amt > 100000
+    db.loans.aggregate([
+    { $match: { loan_amt: { $gt: 100000 } } },
+    { $lookup: { from: "customers", localField: "cust_id", foreignField: "_id", as: "custDetails" } },
+    { $match: { "custDetails.name": "Mr. Patil" } }
+    ]);
+
+    db.customers.updateOne(
+    { name: "Mr. Patil" },
+    { $set: { address: "Updated Pimpri Address" } }
+    );

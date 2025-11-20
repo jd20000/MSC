@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Company Departments</title>
+</head>
+<frameset rows="20%,*%" border="2">
+  <frame src="top.html" name="topFrame" scrolling="no">
+  <frameset cols="25%,75%">
+    <frame src="left.html" name="leftFrame">
+    <frame src="about:blank" name="rightFrame">
+  </frameset>
+</frameset>
+</html>
+<!DOCTYPE html>
+<html>
+<head><title>Company Name</title></head>
+<body style="background-color:lightblue; text-align:center;">
+  <h1>ABC Technologies Pvt. Ltd.</h1>
+  <h3>Welcome to Our Company Portal</h3>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head><title>Departments</title></head>
+<body style="background-color:#f0f0f0;">
+  <h3>Departments</h3>
+  <ul>
+    <li><a href="hr.html" target="rightFrame">HR Department</a></li>
+    <li><a href="sales.html" target="rightFrame">Sales Department</a></li>
+    <li><a href="it.html" target="rightFrame">IT Department</a></li>
+  </ul>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head><title>HR Department</title></head>
+<body style="background-color:#e8f4f8;">
+  <h2>Human Resources Department</h2>
+  <p>The HR department manages recruitment, employee welfare, and training programs.</p>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head><title>IT Department</title></head>
+<body style="background-color:#f9e8f8;">
+  <h2>IT Department</h2>
+  <p>The IT department maintains company software, hardware, and network systems.</p>
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head><title>Sales Department</title></head>
+<body style="background-color:#f4f9e8;">
+  <h2>Sales Department</h2>
+  <p>The Sales department handles client relationships, product promotion, and sales targets.</p>
+</body>
+</html>
+#Q.2
+db.products.insertMany([
+  { _id: 1, name: "Laptop", price: 50000 },
+  { _id: 2, name: "Smartphone", price: 30000 },
+  { _id: 3, name: "Headphones", price: 5000 },
+  { _id: 4, name: "Refrigerator", price: 25000 },
+  { _id: 5, name: "Smartwatch", price: 10000 }
+]);
+db.customers.insertMany([
+  { _id: 1, name: "Mr. Rajiv", city: "Nashik" },
+  { _id: 2, name: "Ms. Sneha", city: "Pune" },
+  { _id: 3, name: "Mr. Amit", city: "Mumbai" },
+  { _id: 4, name: "Ms. Priya", city: "Nashik" },
+  { _id: 5, name: "Mr. Tejas", city: "Thane" }
+]);
+db.orders.insertMany([
+  { _id: 1, cust_id: 1, product_id: 1, qty: 1, order_value: 50000 },
+  { _id: 2, cust_id: 2, product_id: 2, qty: 1, order_value: 30000 },
+  { _id: 3, cust_id: 3, product_id: 3, qty: 2, order_value: 10000 },
+  { _id: 4, cust_id: 1, product_id: 5, qty: 1, order_value: 10000 },
+  { _id: 5, cust_id: 4, product_id: 4, qty: 1, order_value: 25000 }
+]);
+db.invoices.insertMany([
+  { _id: 1, order_id: 1, invoice_date: "2023-08-15" },
+  { _id: 2, order_id: 2, invoice_date: "2023-08-16" },
+  { _id: 3, order_id: 5, invoice_date: "2023-08-17" }
+  // Orders 3 & 4 not processed
+]);
+a. List all products in inventory
+db.products.find({}, { _id: 0, name: 1, price: 1 })
+
+b. Orders with value > 20000
+db.orders.find({ order_value: { $gt: 20000 } })
+
+c. Orders NOT processed (no invoice)
+db.orders.find({
+  _id: { $nin: db.invoices.find().toArray().map(i => i.order_id) }
+})
+
+d. Orders + invoice for “Mr. Rajiv”
+db.orders.find({
+  cust_id: db.customers.findOne({ name:"Mr. Rajiv" })._id
+}).forEach(o => {
+  printjson({
+    order: o,
+    invoice: db.invoices.findOne({ order_id: o._id }) || "Not yet generated"
+  });
+});

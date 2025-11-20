@@ -1,0 +1,112 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>3D Text Effects</title> <style> body { font-family: 'Arial', sans-serif; background-color: #222; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; text-align: center; padding: 20px; }
+   .text-container {
+       max-width: 600px;
+       margin: 0 auto;
+       background-color: #333;
+       padding: 20px;
+       border-radius: 10px;
+   }
+
+   .text-3d {
+       font-size: 50px;
+       font-weight: bold;
+       color: #f39c12;
+       letter-spacing: 2px;
+       line-height: 1.2;
+       text-transform: uppercase;
+       text-align: center;
+
+       text-shadow: 
+           1px 1px 0 #d35400,
+           2px 2px 0 #c0392b,
+           3px 3px 0 #8e44ad,
+           4px 4px 0 #2980b9,
+           5px 5px 0 #16a085;
+   }
+
+   .text-wrap {
+       margin-top: 30px;
+       font-size: 20px;
+       color: #ecf0f1;
+       word-wrap: break-word; 
+       overflow: hidden;
+       text-overflow: ellipsis; 
+       width: 100%;
+       border: 1px solid #555;
+       padding: 10px;
+       border-radius: 5px;
+       background-color: #444;
+   }
+
+   .text-effects {
+       margin-top: 20px;
+       font-size: 24px;
+       color: #1abc9c;
+       font-style: italic;
+       font-variant: small-caps;
+       letter-spacing: 3px;
+       text-transform: uppercase;
+       text-shadow: 2px 2px 5px #000;
+   }
+
+</style> </head> <body> <div class="text-container"> <div class="text-3d">3D Text Example</div> <div class="text-wrap"> This is a long text that will automatically wrap to the next line if it exceeds the container width. Text overflow is also applied. </div> <div class="text-effects">Stylish CSS Text Effects</div> </div> </body> </html>
+
+Model the following Car Showroom information as a graph model,and answer
+the queries using Cypher. Consider a car showroom with different models of
+cars like sofas Honda city, Skoda, Creta, Swift, Ertiga etc. Showroom is
+divided into different sections, onesection for each car model; each section is
+handled by a sales staff. Asales staff can handle one or more sections.
+Customer may enquire about car. An enquiry may result in a purchase by the
+customer.
+
+Identify the labels and relationships, along with their properties, and
+draw a high-level Graph model.
+
+Create nodes and relationships, along with their properties, and
+visualize your actual Graph model.
+CREATE (s1:SalesStaff {name:'Mr. Narayan', employee_id:101}),
+(s2:SalesStaff {name:'Ms. Priya', employee_id:102});
+
+CREATE (sec1:Section {name:'Section A'}),
+(sec2:Section {name:'Section B'}),
+(sec3:Section {name:'Section C'}),
+(sec4:Section {name:'Section D'});
+
+CREATE (c1:CarModel {name:'Honda City', price:1200000}),
+(c2:CarModel {name:'Skoda', price:1500000}),
+(c3:CarModel {name:'Creta', price:1300000}),
+(c4:CarModel {name:'Swift', price:700000}),
+(c5:CarModel {name:'Ertiga', price:900000});
+
+CREATE
+(s1)-[:HANDLES]->(sec1),
+(s1)-[:HANDLES]->(sec2),
+(s2)-[:HANDLES]->(sec3),
+(s2)-[:HANDLES]->(sec4),
+
+(sec1)-[:HAS]->(c1),
+(sec2)-[:HAS]->(c2),
+(sec3)-[:HAS]->(c3),
+(sec4)-[:HAS]->(c4),
+(sec4)-[:HAS]->(c5);
+
+CREATE (cust1:Customer {name:'Ramesh', contact:'1234567890'}),
+(cust2:Customer {name:'Sita', contact:'9876543210'}),
+(cust3:Customer {name:'Rahul', contact:'5555555555'});
+
+CREATE
+(cust1)-[:ENQUIRED]->(c1),
+(cust1)-[:PURCHASED]->(c1),
+(cust2)-[:ENQUIRED]->(c2),
+(cust3)-[:ENQUIRED]->(c3);
+
+Answer the following queries:
+a. List the types of cars available in the showroom.
+MATCH (c:CarModel)
+RETURN c.name AS CarModel;
+
+b. List the sections handled by Mr. Narayan.
+
+c. List the names of customers who have done only enquiry but not
+made any purchase.
+d. List the highly sale car model.

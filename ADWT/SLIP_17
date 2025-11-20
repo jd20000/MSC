@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Box Model Example</title>
+  <style>
+    body {
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+    }
+
+    .outer-box {
+      background-color: #ff9933;
+      width: 300px;
+      height: 300px;
+      border: 5px solid black;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .inner-box {
+      background-color: #ffff66;
+      width: 200px;
+      height: 120px;
+      border: 2px solid black;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .inner-box h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .inner-box p {
+      margin: 5px 0 0;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="outer-box">
+    <div class="inner-box">
+      <h3>M.Sc (Computer Sci)</h3>
+      <p>Academic Year<br>2023-24</p>
+    </div>
+  </div>
+</body>
+</html>
+
+
+// MongoDB Start From Here
+
+Model the following Books and Publisher information as a graph model, 
+and answer the following queries using Cypher.
+Author wrote various types of books which is published by publishers.
+A reader reads a books according to his linking and can
+recommend/provide review for it.
+
+1. Identify the labels and relationships, along with their properties, and
+   draw a high-level Graph model. 
+
+2. Create nodes and relationships, along with their properties, and
+   visualize your actual Graph model.
+
+CREATE
+(a1:Author {name:'R.K. Laxman'}),
+(a2:Author {name:'Amish Tripathi'}),
+(a3:Author {name:'Stan Lee'}),
+
+(b1:Book {title:'Comics World', type:'Comics'}),
+(b2:Book {title:'Shiva Trilogy', type:'Mythology'}),
+(b3:Book {title:'Science Daily', type:'Science'}),
+
+(p1:Publisher {name:'Sage'}),
+(p2:Publisher {name:'Nirali'}),
+(p3:Publisher {name:'Penguin'}),
+
+(r1:Reader {name:'Rahul'}),
+(r2:Reader {name:'Sita'}),
+(r3:Reader {name:'Mitesh'}),
+
+(a1)-[:WROTE]->(b1),
+(a2)-[:WROTE]->(b2),
+(a3)-[:WROTE]->(b1),
+
+(b1)-[:PUBLISHED_BY]->(p1),
+(b2)-[:PUBLISHED_BY]->(p1),
+(b3)-[:PUBLISHED_BY]->(p2),
+
+(r1)-[:READ]->(b1),
+(r2)-[:READ]->(b2),
+(r3)-[:READ]->(b1),
+
+(r1)-[:REVIEWED {rating:5}]->(b1),
+(r2)-[:REVIEWED {rating:4}]->(b2),
+(r3)-[:REVIEWED {rating:2}]->(b1);
+
+3. Answer the Queries
+
+a. List the names of authors who wrote “Comics”.
+MATCH (a:Author)-[:WROTE]->(b:Book {type:'Comics'})
+RETURN a.name;
+
+b. Count no. of readers of book published by “Sage”.
+MATCH (:Reader)-[:READ]->(:Book {title:'Comics World'})-[:PUBLISHED_BY]->(:Publisher {name:'Sage'})
+RETURN count(*) AS TotalReaders;
+
+c. List all the publisher whose name starts with “N”
+MATCH (p:Publisher)
+WHERE p.name STARTS WITH 'N'
+RETURN p.name;
+
+d. List the names of people who have given a rating of (>=3) for book
+MATCH (r:Reader)-[rev:REVIEWED]->(b:Book {title:'Comics World'})
+WHERE rev.rating >= 3
+RETURN r.name, rev.rating;

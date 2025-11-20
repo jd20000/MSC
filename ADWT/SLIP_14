@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Plan Booking Form</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef6f9;
+            margin: 40px;
+        }
+        h1 {
+            text-align: center;
+            background-color: #0077b6;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        form {
+            width: 55%;
+            margin: auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 6px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .gender label, .season label {
+            margin-right: 15px;
+        }
+        .gender, .season {
+            margin-bottom: 15px;
+        }
+        .buttons {
+            text-align: center;
+        }
+        input[type="submit"], input[type="reset"] {
+            width: 120px;
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        input[type="reset"] {
+            background-color: #d62828;
+        }
+        input[type="submit"]:hover {
+            background-color: #005f8a;
+        }
+        input[type="reset"]:hover {
+            background-color: #a71d2a;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Travel Plan Booking Form</h1>
+
+    <form action="#" method="post">
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" rows="3" placeholder="Enter your address" required></textarea>
+
+        <label for="contact">Contact Number:</label>
+        <input type="tel" id="contact" name="contact" placeholder="Enter 10-digit number" pattern="[0-9]{10}" required>
+
+        <label>Gender:</label>
+        <div class="gender">
+            <label><input type="radio" name="gender" value="Male" required> Male</label>
+            <label><input type="radio" name="gender" value="Female"> Female</label>
+            <label><input type="radio" name="gender" value="Other"> Other</label>
+        </div>
+
+        <label>Preferred Season:</label>
+        <div class="season">
+            <label><input type="checkbox" name="season" value="Summer"> Summer</label>
+            <label><input type="checkbox" name="season" value="Winter"> Winter</label>
+            <label><input type="checkbox" name="season" value="Monsoon"> Monsoon</label>
+            <label><input type="checkbox" name="season" value="Spring"> Spring</label>
+        </div>
+
+        <label for="location">Preferred Location Type:</label>
+        <select id="location" name="location" required>
+            <option value="">--Select Location Type--</option>
+            <option value="Hill Station">Hill Station</option>
+            <option value="Beach">Beach</option>
+            <option value="Adventure">Adventure</option>
+            <option value="Wildlife">Wildlife</option>
+            <option value="Heritage">Heritage</option>
+        </select>
+
+        <div class="buttons">
+            <input type="submit" value="Submit">
+            <input type="reset" value="Reset">
+        </div>
+    </form>
+
+</body>
+</html>
+High-Level Graph Model
+(Student) --APPLIED_FOR--> (Scholarship)
+(Student) --RECOMMENDED--> (Student)
+
+2. Create Nodes & Relationships
+CREATE
+(s1:Student {name:'Amit', category:'OBC', year:2021}),
+(s2:Student {name:'Ravi', category:'SC', year:2021}),
+(s3:Student {name:'Sita', category:'OBC', year:2020}),
+
+(sch1:Scholarship {name:'OBC Merit', category:'OBC', income_limit:80000, year:'2020-2021'}),
+(sch2:Scholarship {name:'Minority Aid', category:'Minority', income_limit:100000, year:'2020-2021'}),
+
+(s1)-[:APPLIED_FOR]->(sch1),
+(s3)-[:APPLIED_FOR]->(sch1),
+(s2)-[:APPLIED_FOR]->(sch2),
+
+(s1)-[:RECOMMENDED]->(s3);
+
+3. Cypher Queries
+a. List the names of scholarships for OBC category
+MATCH (s:Scholarship {category:'OBC'})
+RETURN s.name;
+
+b. Count students benefitted by "OBC Merit" scholarship in 2020-2021
+MATCH (st:Student)-[:APPLIED_FOR]->(sc:Scholarship {name:'OBC Merit', year:'2020-2021'})
+RETURN COUNT(st) AS total_students;
+
+c. Update the income limit for a scholarship
+MATCH (s:Scholarship {name:'OBC Merit'})
+SET s.income_limit = 90000
+RETURN s;
+
+d. List the most popular scholarship (highest applications)
+MATCH (:Student)-[:APPLIED_FOR]->(s:Scholarship)
+RETURN s.name, COUNT(*) AS total
+ORDER BY total DESC
+LIMIT 1;

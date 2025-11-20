@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Form</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" 
+rel="stylesheet">
+<style>
+ body {
+   background-color: #f5f5f5;
+ }
+ .contact-box {
+   display: flex;
+   background: #fff;
+   border-radius: 10px;
+   overflow: hidden;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+ }
+ .contact-left {
+   background: #f39c12;
+   color: #fff;
+   padding: 40px 30px;
+   width: 35%;
+ }
+ .contact-left h3 {
+   font-weight: bold;
+ }
+ .contact-right {
+   padding: 40px;
+   width: 65%;
+ }
+</style>
+</head>
+<body>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="contact-box">
+        <div class="contact-left">
+          <h3>📧 Contact Us</h3>
+          <p>We would love to hear from you!</p>
+        </div>
+
+        <div class="contact-right">
+          <form>
+            <div class="mb-3">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-control" placeholder="Enter First Name" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-control" placeholder="Enter Last Name" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" placeholder="Enter Email" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Comment</label>
+              <textarea class="form-control" rows="3" placeholder="Your message..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-dark px-4">Submit</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>  
+
+</body>
+</html>
+
+
+// MongoDB Start From Here
+
+Model the following food service industry information as a graph
+model, and answer the following queries using Cypher.
+Consider food service industries like ZOMATO, Swiggy around us.
+Popular restaurants are connected to these industries to increase sell.
+A person order food through this industry and get offers. A person give
+rate(1-5 stars) to company its facility/facilities. and can recommend this
+to his/her friends.
+
+4. Identify the labels and relationships, along with their properties, and
+draw a high-level Graph model. 
+
+5. Create nodes and relationships, along with their properties, and
+visualize your actual Graph model. 
+
+CREATE
+(p1:Person {name:'Sahil', age:25}),
+(p2:Person {name:'Sara', age:30}),
+(p3:Person {name:'Rahul', age:28}),
+
+(fs1:FoodService {name:'Swiggy'}),
+(fs2:FoodService {name:'Zomato'}),
+
+(r1:Restaurant {name:'Tandoori Tales', area:'Indiranagar', rating:5}),
+(r2:Restaurant {name:'Pizza Hub', area:'Koramangala', rating:4}),
+(r3:Restaurant {name:'Burger King', area:'Indiranagar', rating:3}),
+
+(o1:Order {order_id:1, date:'2023-01-01'}),
+(o2:Order {order_id:2, date:'2023-01-01'}),
+(o3:Order {order_id:3, date:'2023-02-01'}),
+
+(p1)-[:PLACED]->(o1),
+(p2)-[:PLACED]->(o2),
+(p3)-[:PLACED]->(o3),
+
+(o1)-[:FROM]->(r1),
+(o2)-[:FROM]->(r2),
+(o3)-[:FROM]->(r3),
+
+(o1)-[:USING]->(fs1),
+(o2)-[:USING]->(fs1),
+(o3)-[:USING]->(fs2),
+
+(p1)-[:RECOMMENDED]->(r1),
+(p2)-[:RECOMMENDED]->(r2);
+
+
+6. Answer the Queries.
+
+a. Count no. of customers who place order on “1/1/2023”
+MATCH (p:Person)-[:PLACED]->(o:Order {date:'2023-01-01'})
+RETURN count(p) AS TotalCustomers;
+
+b. List the names of customers whose name starts with S and place order using Swiggy  
+MATCH (p:Person)-[:PLACED]->(o:Order)-[:USING]->(fs:FoodService {name:'Swiggy'})
+WHERE p.name STARTS WITH 'S'
+RETURN p.name;
+
+c. List the names of hotels with high rating (>=4).
+MATCH (r:Restaurant)
+WHERE r.rating >= 4
+RETURN r.name, r.rating;
+
+d. List the most recommended hotels in....... area.
+MATCH (p:Person)-[:RECOMMENDED]->(r:Restaurant {area:'Indiranagar'})
+RETURN r.name, count(p) AS Recommendations
+ORDER BY Recommendations DESC
+LIMIT 1;

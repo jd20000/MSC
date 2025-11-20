@@ -44,6 +44,7 @@ void h(int s){ puts("Timeout! Killing child..."); kill(c,SIGKILL); }
     signal(SIGALRM,h);
     if(!(c=fork())) execlp("sleep","sleep","10",NULL);
     alarm(5);
-    int st; wait(&st);
+    int st;
+   wait(&st);
     printf(WIFEXITED(st)?"Child exited normally\n":"Child killed by signal\n");
  }

@@ -1,0 +1,102 @@
+<!-- Q1 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Bootstrap Image Thumbnails</title>
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
+rel="stylesheet">
+</head>
+<body>
+
+ <div class="container mt-5">
+   <h2 class="text-center mb-4">Image Thumbnails Gallery</h2>
+   <div class="row g-4">
+     <div class="col-md-4 col-sm-6">
+       <div class="card">
+         <img src="/images/24a158584319d7092059 d3ebc53f419c.jpg" class="card-img-top img
+thumbnail" alt="Image 1">
+         <div class="card-body text-center">
+           <p class="card-text">Thumbnail 1</p>
+         </div>
+       </div>
+     </div>
+
+     <div class="col-md-4 col-sm-6">
+       <div class="card">
+         <img src="/images/36af6207d37def406abf 4bf8b8b1a54e.jpg" class="card-img-top img
+thumbnail" alt="Image 2">
+         <div class="card-body text-center">
+           <p class="card-text">Thumbnail 2</p>
+         </div>
+       </div>
+     </div>
+
+     <div class="col-md-4 col-sm-6">
+       <div class="card">
+         <img src="/images/18100151_1.jpg" class="card-img-top img-thumbnail" alt="Image 3">
+         <div class="card-body text-center">
+           <p class="card-text">Thumbnail 3</p>
+         </div>
+       </div>
+     </div>
+
+   </div>
+ </div>
+
+</body>
+</html>
+
+
+ use clgDB
+
+// Departments Collection=id,name(dept),location
+db.departments.insertMany([
+  { _id: 1, name: "HR", location: "Mumbai" },
+  { _id: 2, name: "Sales", location: "Pune" },
+  { _id: 3, name: "IT", location: "Nashik" },
+  { _id: 4, name: "Accounts", location: "Nagpur" },
+  { _id: 5, name: "Marketing", location: "Thane" }
+]);
+
+// Employees Collection=name,sal,dept
+db.employees.insertMany([
+  { name: "Ravi", salary: 45000, dept_id: 1 },
+  { name: "Sneha", salary: 55000, dept_id: 2 },
+  { name: "Amit",  salary: 75000, dept_id: 3 },
+  { name: "Priya", salary: 60000, dept_id: 2 },
+  { name: "Kiran", salary: 40000, dept_id: 4 },
+  { name: "Rohit", salary: 50000, dept_id: 5 },
+  { name: "Neha",  salary: 70000, dept_id: 3 }
+]);
+
+// Queries
+
+// a. Display name of employee who has highest salary
+db.employees.find().sort({ salary: -1 }).limit(1)
+
+// b. Display biggest department with max. no. of employees
+print(
+  "Department:",
+  db.departments.findOne({
+    _id: db.employees.aggregate([
+      { $group: { _id: "$dept_id", c: { $sum: 1 } } },
+      { $sort: { c: -1 } },
+      { $limit: 1 }
+    ]).toArray()[0]._id
+  }).name
+);
+
+// c. Write a cursor which shows department wise employee information
+db.departments.find().forEach(d =>
+  db.employees.find({ dept_id: d._id }).forEach(e =>
+    print(d.name, " ", e.name, "|", e.salary)
+  )
+);
+
+// d. List all the employees who work in Sales dept and salary > 50000
+db.employees.find({
+  dept_id: db.departments.findOne({ name: "Sales" })._id,
+  salary: { $gt: 50000 }
+})
