@@ -1,3 +1,19 @@
+//Test
+// Q.1
+// Input:
+// 5
+// 5 3 8 1 2
+
+// Output
+
+// 1 2 3 5 8
+// Time taken: ...
+
+// Learn
+
+// Basic sorting
+// Time measurement using clock()
+// ---------------------------------------------
 // #include <stdio.h>
 // #include <time.h>
 
@@ -42,7 +58,17 @@
 
 
 
+// --------------------
+// Test
+// Same input
+// Output
+// Sorted list + time
 
+// Learn
+
+// Divide & conquer
+// Faster than selection
+// ---------------
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

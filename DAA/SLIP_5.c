@@ -1,3 +1,31 @@
+// Q.1
+
+// Kruskal
+
+// Output
+// Sorted edges forming MST
+
+// Learn
+
+// Union-Find
+// Edge-based MST
+
+// Q.2
+
+// Huffman
+
+// Output
+
+// a : 110
+// b : 111
+// ...
+
+// Learn
+
+// Compression technique
+
+
+
 // #include <stdio.h>
 // #include <stdlib.h>
 
